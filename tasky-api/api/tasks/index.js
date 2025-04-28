@@ -2,7 +2,7 @@ import express from 'express';
 import { tasksData } from './tasksData';
 import { v4 as uuidv4 } from 'uuid';
 
-const router = express.Router(); 
+const router = express.Router();
 
 router.get('/', (req, res) => {
     res.json(tasksData);
@@ -21,6 +21,8 @@ router.post('/', (req, res) => {
     const { title, description, deadline, priority, done } = req.body;
     const newTask = {
         id: uuidv4(),
+        created_at: new Date().toISOString(),
+        updated_at: new Date().toISOString(),
         title,
         description,
         deadline,
@@ -34,12 +36,13 @@ router.post('/', (req, res) => {
 //Update an existing task
 router.put('/:id', (req, res) => {
     const { id } = req.params;
-    const taskIndex = tasksData.tasks.findIndex(task => task.id === id); 
+    const taskIndex = tasksData.tasks.findIndex(task => task.id === id);
     if (taskIndex === -1) {
         return res.status(404).json({ status: 404, message: 'Task not found' });
     }
-    const updatedTask = { ...tasksData.tasks[taskIndex], ...req.body, id:id };
+    const updatedTask = { ...tasksData.tasks[taskIndex], ...req.body, id: id };
     tasksData.tasks[taskIndex] = updatedTask;
+    tasksData.tasks[taskIndex].updated_at = new Date().toISOString();
     res.json(updatedTask);
 });
 
@@ -47,9 +50,9 @@ router.put('/:id', (req, res) => {
 router.delete('/:id', (req, res) => {
     const { id } = req.params;
     const taskIndex = tasksData.tasks.findIndex(task => task.id === id);
-    
-    if (taskIndex === -1) return res.status(404).json({status:404,message:'Task not found'});
-    
+
+    if (taskIndex === -1) return res.status(404).json({ status: 404, message: 'Task not found' });
+
     tasksData.tasks.splice(taskIndex, 1);
     res.status(204).send();
     tasksData.total_results--;
