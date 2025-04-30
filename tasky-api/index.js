@@ -2,6 +2,8 @@ import dotenv from 'dotenv';
 import express from 'express';
 import tasksRouter from './api/tasks';
 import './db';
+// other imports
+import cors from 'cors';
 
 
 dotenv.config();
@@ -22,10 +24,12 @@ const port = process.env.PORT;
 
 app.use(express.json());
 
+// Enable CORS for all requests
+app.use(cors());
+
 app.use('/api/tasks', tasksRouter);
 
 app.use(errHandler);
-
 
 app.listen(port, () => {
   console.info(`Server running at ${port}`);
