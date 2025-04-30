@@ -2,8 +2,9 @@ import dotenv from 'dotenv';
 import express from 'express';
 import tasksRouter from './api/tasks';
 import './db';
-// other imports
 import cors from 'cors';
+//... other imports
+import usersRouter from './api/users';
 
 
 dotenv.config();
@@ -28,6 +29,10 @@ app.use(express.json());
 app.use(cors());
 
 app.use('/api/tasks', tasksRouter);
+
+//Users router
+app.use('/api/users', usersRouter);
+
 
 app.use(errHandler);
 
